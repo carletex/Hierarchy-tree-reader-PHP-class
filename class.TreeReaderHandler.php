@@ -20,6 +20,16 @@ class TreeReaderHandler
 
 	public $empty_tree_msg = 'Empty tree';
 
+	/*
+	 * Constructor function
+	 *
+	 * PDO $db: A pdo instance connected to the database
+	 * string $table_name: The name of the hierarchy table
+	 * string $id_key: The table key for the element id
+	 * string $parentid_key: The table key for the element parent id
+	 * string $name_key: The table key for the element name
+	 */
+
 	function __construct($db, $table_name, $id_key, $parentid_key, $name_key) {
 		$this->db = $db;
 		$this->table_name = $table_name;
