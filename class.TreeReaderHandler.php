@@ -29,11 +29,11 @@ class TreeReaderHandler
 		$this->full_tree = $this->getTreeFromDB();
    	}
 
-   	/**
+   	/*
 	 * Public functions
  	 */
 
-   	/**
+   	/*
 	 * Returns single node data
 	 *
 	 * int $id: the requested node id
@@ -45,14 +45,14 @@ class TreeReaderHandler
 		return 0;
 	}
 
-	/**
+	/*
 	 * Returns the full tree on a multidimensional array
 	 */
    	public function getFullTree() {
 		return $this->full_tree;
 	}
 
-	/**
+	/*
 	 * Returns a subtree
 	 *
 	 * int $parent_id: The top parent id
@@ -76,7 +76,7 @@ class TreeReaderHandler
 		return $tree;
 	}
 
-	/**
+	/*
 	 * Returns the level of the selected node
 	 *
 	 * int $id: The node id
@@ -93,7 +93,7 @@ class TreeReaderHandler
 		return $this->getSubTree($node['parent_id'], true, 1, $exclude);
 	}
 
-	/**
+	/*
 	 * Returns a HTML list of the selected tree
 	 *
 	 * array $tree: The tree to generate the list. Uses the full tree by default
@@ -113,7 +113,7 @@ class TreeReaderHandler
 		return $html;
 	}
 
-	/**
+	/*
 	 * Returns a HTML select combo of the selected tree
 	 *
 	 * array $tree: The tree to generate the list. Uses the full tree by default
@@ -134,11 +134,11 @@ class TreeReaderHandler
 		return $html;
 	}
 
-	/**
+	/*
 	 * Private functions
  	 */
 
-	/**
+	/*
 	 * Returns the full tree on a multidimensional array
 	 *
 	 * Also stores the following class properties:
@@ -174,7 +174,7 @@ class TreeReaderHandler
 
 	}
 
-	/**
+	/*
 	 * Returns recursively the childs of the selected node
 	 *
 	 * int $parent_id: The parent id
@@ -199,7 +199,7 @@ class TreeReaderHandler
 		return $subtree;
 	}
 
-	/**
+	/*
 	 * Helper function for getList(). Returns recursively the formatted childs of the selected node
 	 *
 	 * int $node: The parent node
