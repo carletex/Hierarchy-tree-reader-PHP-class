@@ -68,19 +68,19 @@ class TreeReaderHandler
 	 * int $parent_id: The top parent id
 	 * bool $exclude_parent:
 	 * 		False(default): starts the tree by the parent
-	 * 		True: the tree starts on the childs.
+	 * 		True: the tree starts on the children.
 	 * int $depth: The depth of the tree. It starts counting by the parent node. -1 for unlimited depth
 	 * int array $exclude_nodes: id's of the nodes to exclude in the subtree
 	 */
 	public function getSubTree($parent_id, $exclude_parent = false, $depth = -1, $exclude_nodes = array()) {
 		if ($exclude_parent || $parent_id == 0) {
-			return $this->getChilds($parent_id, 0, $depth, $exclude_nodes);
+			return $this->getChildren($parent_id, 0, $depth, $exclude_nodes);
 		}
 		$parent = $this->getNode($parent_id);
 		$tree = array();
 		if ($parent) {
 			$parent['level'] = 0;
-			$parent['childs'] = $this->getChilds($parent_id, 1, $depth, $exclude_nodes);
+			$parent['children'] = $this->getChildren($parent_id, 1, $depth, $exclude_nodes);
 			$tree[$parent_id] = $parent;
 		}
 		return $tree;
@@ -176,7 +176,7 @@ class TreeReaderHandler
 
 		foreach ($parent_tree['0'] as $parent_node) {
 			$parent_node['level'] = 0;
-			$parent_node['childs'] = $this->getChilds($parent_node['id'], 1);
+			$parent_node['children'] = $this->getChildren($parent_node['id'], 1);
 			$full_tree[$parent_node['id']] = $parent_node;
 		}
 
@@ -185,7 +185,7 @@ class TreeReaderHandler
 	}
 
 	/*
-	 * Returns recursively the childs of the selected node
+	 * Returns recursively the children of the selected node
 	 *
 	 * int $parent_id: The parent id
 	 * int $level: The level of the current nodes
@@ -193,14 +193,14 @@ class TreeReaderHandler
 	 * int array $exclude_nodes: id's of the nodes to exclude in the subtree
 	 */
 
-	private function getChilds($parent_id, $level, $depth = -1, $exclude_nodes = array()) {
+	private function getChildren($parent_id, $level, $depth = -1, $exclude_nodes = array()) {
 		$subtree = array();
 		if (isset($this->parent_tree[$parent_id]) && $depth != 0) {
 			foreach ($this->parent_tree[$parent_id] as $node) {
 				$skip_node = in_array($node['id'], $exclude_nodes);
 				if (!$skip_node) {
 					$node['level'] = $level;
-					$node['childs'] = $this->getChilds($node['id'], $level + 1, $depth - 1, $exclude_nodes);
+					$node['children'] = $this->getChildren($node['id'], $level + 1, $depth - 1, $exclude_nodes);
 					$subtree[$node['id']] = $node;
 				}
 
@@ -210,16 +210,16 @@ class TreeReaderHandler
 	}
 
 	/*
-	 * Helper function for getList(). Returns recursively the formatted childs of the selected node
+	 * Helper function for getList(). Returns recursively the formatted children of the selected node
 	 *
 	 * int $node: The parent node
 	 */
 	private function getListChildItems($node) {
-		if (empty($node['childs'])) {
+		if (empty($node['children'])) {
 			return null;
 		}
 		$html_list = '<ul class="level-' . ($node['level'] + 1) .'">';
-		foreach ($node['childs'] as $child_node) {
+		foreach ($node['children'] as $child_node) {
 			$html_list .= '<li class="node-' . $child_node['id'] .'">' . $child_node['name'] . '</li>';
 			$html_list .= $this->getListChildItems($child_node);
 		}
@@ -228,14 +228,14 @@ class TreeReaderHandler
 	}
 
 	/*
-	 * Helper function for getSelect(). Returns recursively the formatted childs of the selected node
+	 * Helper function for getSelect(). Returns recursively the formatted children of the selected node
 	 *
 	 * int $node: The parent node
 	 * string $level_marker: Custom marker to repeat and identify each level
 	 */
 	private function getSelectItems ($node, $level_marker = '-') {
 		$html_option = '<option value="' . $node['id'] . '">' . str_repeat($level_marker, $node['level']) . $node['name'] . '</option>';
-		foreach ($node['childs'] as $child_node) {
+		foreach ($node['children'] as $child_node) {
 			$html_option .= $this->getSelectItems($child_node, $level_marker);
 		}
 		return $html_option;
