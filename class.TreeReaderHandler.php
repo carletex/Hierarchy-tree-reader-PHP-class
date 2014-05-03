@@ -44,7 +44,7 @@ class TreeReaderHandler
  	 */
 
    	/*
-	 * Returns single node data
+	 * Returns a single node
 	 *
 	 * int $id: the requested node id
 	 */
@@ -56,7 +56,7 @@ class TreeReaderHandler
 	}
 
 	/*
-	 * Returns the full tree on a multidimensional array
+	 * Returns the full data tree on a multidimensional array
 	 */
    	public function getFullTree() {
 		return $this->full_tree;
@@ -87,7 +87,7 @@ class TreeReaderHandler
 	}
 
 	/*
-	 * Returns the level of the selected node
+	 * Returns the siblings of the the selected node
 	 *
 	 * int $id: The node id
 	 * bool $exclude_self:
@@ -104,7 +104,7 @@ class TreeReaderHandler
 	}
 
 	/*
-	 * Returns a HTML list of the selected tree
+	 * Returns a nested HTML list of the selected tree
 	 *
 	 * array $tree: The tree to generate the list. Uses the full tree by default
 	 * string $list_class: Custom class for the list
@@ -185,7 +185,7 @@ class TreeReaderHandler
 	}
 
 	/*
-	 * Returns recursively the children of the selected node
+	 * Returns all the children of the selected node
 	 *
 	 * int $parent_id: The parent id
 	 * int $level: The level of the current nodes
@@ -210,7 +210,7 @@ class TreeReaderHandler
 	}
 
 	/*
-	 * Helper function for getList(). Returns recursively the formatted children of the selected node
+	 * Helper function for getList(). Returns the formatted children of the selected node
 	 *
 	 * int $node: The parent node
 	 */
@@ -228,7 +228,7 @@ class TreeReaderHandler
 	}
 
 	/*
-	 * Helper function for getSelect(). Returns recursively the formatted children of the selected node
+	 * Helper function for getSelect(). Returns the formatted children of the selected node
 	 *
 	 * int $node: The parent node
 	 * string $level_marker: Custom marker to repeat and identify each level
