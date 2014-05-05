@@ -1,4 +1,11 @@
 <?php
+/**
+* This PHP class handles the reading of hierarchical structures in SQL databases (using PDO)
+* and displays HTML lists and HTML selects with the data, using arrays and recursivity.
+*
+* @author Carlos Sánchez (carletex) <info@carletex.com>
+* @link https://github.com/carletex/Hierarchy-tree-reader-PHP-class
+*/
 
 class TreeReaderHandler
 {
@@ -20,14 +27,14 @@ class TreeReaderHandler
 
 	public $empty_tree_msg = 'Empty tree';
 
-	/*
+	/**
 	 * Constructor function
 	 *
-	 * PDO $db: A pdo instance connected to the database
-	 * string $table_name: The name of the hierarchy table
-	 * string $id_key: The table key for the element id
-	 * string $parentid_key: The table key for the element parent id
-	 * string $name_key: The table key for the element name
+	 * @param PDO $db A pdo instance connected to the database
+	 * @param string $table_name The name of the hierarchy table
+	 * @param string $id_key The table key for the element id
+	 * @param string $parentid_key The table key for the element parent id
+	 * @param string $name_key The table key for the element name
 	 */
 
 	function __construct($db, $table_name, $id_key, $parentid_key, $name_key) {
@@ -39,14 +46,15 @@ class TreeReaderHandler
 		$this->full_tree = $this->getTreeFromDB();
    	}
 
-   	/*
+   	/**
 	 * Public functions
  	 */
 
-   	/*
+   	/**
 	 * Returns a single node
 	 *
-	 * int $id: the requested node id
+	 * @param int $id the requested node id
+	 * @return array|0 The node with the id provided
 	 */
    	public function getNode($id) {
    		if (isset($this->raw_tree[$id])){
@@ -55,22 +63,25 @@ class TreeReaderHandler
 		return 0;
 	}
 
-	/*
+	/**
 	 * Returns the full data tree on a multidimensional array
+	 *
+	 * @return array The multidimensional array with all the tree data
 	 */
    	public function getFullTree() {
 		return $this->full_tree;
 	}
 
-	/*
+	/**
 	 * Returns a subtree
 	 *
-	 * int $parent_id: The top parent id
-	 * bool $exclude_parent:
-	 * 		False(default): starts the tree by the parent
-	 * 		True: the tree starts on the children.
-	 * int $depth: The depth of the tree. It starts counting by the parent node. -1 for unlimited depth
-	 * int array $exclude_nodes: id's of the nodes to exclude in the subtree
+	 * @param int $parent_id The top parent id
+	 * @param bool $exclude_parent
+	 * 			   False(default): starts the tree by the parent
+	 * 			   True: the tree starts on the children.
+	 * @param int $depth The depth of the tree. It starts counting by the parent node. -1 for unlimited depth
+	 * @param int array $exclude_nodes id's of the nodes to exclude in the subtree
+	 * @return array The array with the subtree data
 	 */
 	public function getSubTree($parent_id, $exclude_parent = false, $depth = -1, $exclude_nodes = array()) {
 		if ($exclude_parent || $parent_id == 0) {
@@ -86,13 +97,14 @@ class TreeReaderHandler
 		return $tree;
 	}
 
-	/*
+	/**
 	 * Returns the siblings of the the selected node
 	 *
-	 * int $id: The node id
-	 * bool $exclude_self:
-	 * 		False(default): Includes all the nodes in the level
-	 * 		True: Exclude the selected node
+	 * @param int $id The node id
+	 * @param bool $exclude_self
+	 * 		       False(default): Includes all the nodes in the level
+	 * 		       True: Exclude the selected node
+	 * @return array The tree with the siblings of the provided node
 	 */
 	public function getSiblings($id, $exclude_self = false) {
 		$node = $this->getNode($id);
@@ -103,11 +115,12 @@ class TreeReaderHandler
 		return $this->getSubTree($node['parent_id'], true, 1, $exclude);
 	}
 
-	/*
+	/**
 	 * Returns a nested HTML list of the selected tree
 	 *
-	 * array $tree: The tree to generate the list. Uses the full tree by default
-	 * string $list_class: Custom class for the list
+	 * @param array $tree The tree to generate the list. Uses the full tree by default
+	 * @param string $list_class Custom class for the list
+	 * @return string The HTML nested list with the tree data
 	 */
 	public function getList($tree = null, $list_class = 'tree') {
 		if (is_array($tree) && empty($tree)) {
@@ -123,12 +136,13 @@ class TreeReaderHandler
 		return $html;
 	}
 
-	/*
+	/**
 	 * Returns a HTML select combo of the selected tree
 	 *
-	 * array $tree: The tree to generate the list. Uses the full tree by default
-	 * string $select_name: Custom class for the combo
-	 * string $level_marker: Custom marker to repeat and identify each level
+	 * @param array $tree The tree to generate the list. Uses the full tree by default
+	 * @param string $select_name Custom class for the combo
+	 * @param string $level_marker Custom marker to repeat and identify each level
+	 * @return string The HTML select combo with the tree data
 	 */
 	public function getSelect($tree = null, $select_name = 'tree', $level_marker = '-') {
 		if (is_array($tree) && empty($tree)) {
@@ -144,16 +158,18 @@ class TreeReaderHandler
 		return $html;
 	}
 
-	/*
+	/**
 	 * Private functions
  	 */
 
-	/*
+	/**
 	 * Returns the full tree on a multidimensional array
 	 *
 	 * Also stores the following class properties:
 	 * 		$raw_tree: Tree keyed by id on a single-dimensional array
 	 *		$parent_tree: Tree grouped by parent
+	 *
+	 * @return array The multidimensional array with all the tree data
 	 */
 
 	private function getTreeFromDB() {
@@ -184,13 +200,14 @@ class TreeReaderHandler
 
 	}
 
-	/*
+	/**
 	 * Returns all the children of the selected node
 	 *
-	 * int $parent_id: The parent id
-	 * int $level: The level of the current nodes
-	 * int $depth: The depth of the tree. It starts counting by the parent node. -1 for unlimited depth
-	 * int array $exclude_nodes: id's of the nodes to exclude in the subtree
+	 * @param int $parent_id The parent id
+	 * @param int $level The level of the current nodes
+	 * @param int $depth The depth of the tree. It starts counting by the parent node. -1 for unlimited depth
+	 * @param int array $exclude_nodes id's of the nodes to exclude in the subtree
+	 * @return array The tree data with the children of the provided node id
 	 */
 
 	private function getChildren($parent_id, $level, $depth = -1, $exclude_nodes = array()) {
@@ -209,10 +226,11 @@ class TreeReaderHandler
 		return $subtree;
 	}
 
-	/*
+	/**
 	 * Helper function for getList(). Returns the formatted children of the selected node
 	 *
-	 * int $node: The parent node
+	 * @param int $node The parent node
+	 * @return string The HTML nested list with the children tree data of the provided node
 	 */
 	private function getListChildItems($node) {
 		if (empty($node['children'])) {
@@ -227,11 +245,12 @@ class TreeReaderHandler
 		return $html_list;
 	}
 
-	/*
+	/**
 	 * Helper function for getSelect(). Returns the formatted children of the selected node
 	 *
-	 * int $node: The parent node
-	 * string $level_marker: Custom marker to repeat and identify each level
+	 * @param int $node The parent node
+	 * @param string $level_marker Custom marker to repeat and identify each level
+	 * @return string The HTML select options with the children tree data of the provided node
 	 */
 	private function getSelectItems ($node, $level_marker = '-') {
 		$html_option = '<option value="' . $node['id'] . '">' . str_repeat($level_marker, $node['level']) . $node['name'] . '</option>';
