@@ -10,3 +10,4 @@ This PHP class handles the reading of hierarchical structures in SQL databases (
 * __getSiblings($id, $exclude_self = false)__: Returns the siblings of the the selected node
 * __getList($tree = null, $list_class = 'tree')__: Returns a nested HTML list of the selected tree
 * __getSelect($tree = null, $select_name = 'tree', $level_marker = '-')__: Returns a HTML select combo of the selected tree
+*__getPath($id, $separator = '>')__: Returns the full path of a the node

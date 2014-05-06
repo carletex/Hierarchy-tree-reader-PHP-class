@@ -159,6 +159,25 @@ class TreeReaderHandler
 	}
 
 	/**
+	 * Returns the full path of a the node
+	 *
+	 * @param int $id The node id
+	 * @param string $separator Custom separator printed between nodes
+	 * @return string The full path of the provided node
+	 */
+
+	public function getPath($id, $separator = '>'){
+		$node = $this->getNode($id);
+		if (!$node) {
+			return 0;
+		}
+		if ($node['parent_id']) {
+			return $this->getPath($node['parent_id'], $separator) . ' ' . $separator . ' ' . $node['name'];
+		}
+		return $node['name'];
+	}
+
+	/**
 	 * Private functions
  	 */
 
