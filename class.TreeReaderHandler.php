@@ -159,11 +159,11 @@ class TreeReaderHandler
 	}
 
 	/**
-	 * Returns the full path of a the node
+	 * Returns the full path of a node
 	 *
 	 * @param int $id The node id
 	 * @param string $separator Custom separator printed between nodes
-	 * @return string The full path of the provided node
+	 * @return string The full path of the provided node id
 	 */
 
 	public function getPath($id, $separator = '>'){
