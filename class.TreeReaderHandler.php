@@ -90,9 +90,11 @@ class TreeReaderHandler
 		$parent = $this->getNode($parent_id);
 		$tree = array();
 		if ($parent) {
-			$parent['level'] = 0;
-			$parent['children'] = $this->getChildren($parent_id, 1, $depth, $exclude_nodes);
-			$tree[$parent_id] = $parent;
+			$tree[$parent['id']]['id'] = &$this->raw_tree[$parent['id']]['id'];
+			$tree[$parent['id']]['name'] = &$this->raw_tree[$parent['id']]['name'];
+			$tree[$parent['id']]['parent_id'] = &$this->raw_tree[$parent['id']]['parent_id'];
+			$tree[$parent['id']]['level'] = 0;
+			$tree[$parent['id']]['children'] = $this->getChildren($parent_id, 1, $depth, $exclude_nodes);
 		}
 		return $tree;
 	}
@@ -195,24 +197,26 @@ class TreeReaderHandler
    		$query = $this->db->prepare("SELECT $this->id_key as id, $this->name_key as name , $this->parentid_key as parent_id
    									 FROM $this->table_name");
 		$query->execute();
-		$query_tree = $query->fetchAll(PDO::FETCH_ASSOC);
+		$query_tree = $query->fetchAll(\PDO::FETCH_ASSOC);
 
 		$parent_tree = array();
 		$raw_tree = array();
 		$full_tree = array();
 
 		foreach ($query_tree as $node) {
-			$parent_tree[$node['parent_id']][$node['id']] = $node;
 			$raw_tree[$node['id']] = $node;
+			$parent_tree[$node['parent_id']][$node['id']] = &$raw_tree[$node['id']];
 		}
 
 		$this->parent_tree = $parent_tree;
 		$this->raw_tree = $raw_tree;
 
 		foreach ($parent_tree['0'] as $parent_node) {
-			$parent_node['level'] = 0;
-			$parent_node['children'] = $this->getChildren($parent_node['id'], 1);
-			$full_tree[$parent_node['id']] = $parent_node;
+			$full_tree[$parent_node['id']]['id'] = &$raw_tree[$parent_node['id']]['id'];
+			$full_tree[$parent_node['id']]['name'] = &$raw_tree[$parent_node['id']]['name'];
+			$full_tree[$parent_node['id']]['parent_id'] = &$raw_tree[$parent_node['id']]['parent_id'];
+			$full_tree[$parent_node['id']]['level'] = 0;
+			$full_tree[$parent_node['id']]['children'] = $this->getChildren($parent_node['id'], 1);
 		}
 
 		return $full_tree;
@@ -235,9 +239,11 @@ class TreeReaderHandler
 			foreach ($this->parent_tree[$parent_id] as $node) {
 				$skip_node = in_array($node['id'], $exclude_nodes);
 				if (!$skip_node) {
-					$node['level'] = $level;
-					$node['children'] = $this->getChildren($node['id'], $level + 1, $depth - 1, $exclude_nodes);
-					$subtree[$node['id']] = $node;
+					$subtree[$node['id']]['id'] = &$this->raw_tree[$node['id']]['id'];
+					$subtree[$node['id']]['name'] = &$this->raw_tree[$node['id']]['name'];
+					$subtree[$node['id']]['parent_id'] = &$this->raw_tree[$node['id']]['parent_id'];
+					$subtree[$node['id']]['level'] = $level;
+					$subtree[$node['id']]['children'] = $this->getChildren($node['id'], $level + 1, $depth - 1, $exclude_nodes);
 				}
 
 			}
